@@ -12,6 +12,7 @@ import org.testng.annotations.Test;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
+import static org.spotify.APIHelper.PlaylistHelper.*;
 import static org.spotify.Utils.RequestSpecifications.customReqSpecs;
 import static org.spotify.Utils.RequestSpecifications.defaultReqSpecs;
 import static org.spotify.Utils.ResponseSpecifications.*;
@@ -29,16 +30,17 @@ public class PlaylistTest
     public void CreatePlaylist()
     {
         CreatePlaylist createPlaylistdata=new CreatePlaylist();
-        createPlaylistdata.setName("Punjabi Favs2");
-        createPlaylistdata.setDescription("All time favs2");
+        createPlaylistdata.setName("Punjabi Favs3");
+        createPlaylistdata.setDescription("All time favs3");
         createPlaylistdata.setIsPublic(true);
         Playlist playlistdata=new Playlist();
 
         RequestSpecification requestSpecification=defaultReqSpecs();
         ResponseSpecification responseSpecification=customresspec("application/json",201);
-        playlistdata= given(requestSpecification).body(createPlaylistdata).
-                when().post("/users/31q6bavboh4c2yrlxww6g4oh7z3a/playlists")
-                .then().spec(responseSpecification).extract().response().as(Playlist.class);
+
+
+        playlistdata=createPlaylist(requestSpecification,responseSpecification,createPlaylistdata);//Hitting the api request
+
         assertThat(playlistdata.getName(),equalTo(createPlaylistdata.getName()));
         assertThat(playlistdata.getIspublic(),equalTo(createPlaylistdata.getIsPublic()));
 
@@ -50,9 +52,7 @@ public class PlaylistTest
         RequestSpecification requestSpecification=defaultReqSpecs();
         ResponseSpecification responseSpecification=defaultresponsespec();
 
-        playlistdata=given(requestSpecification).
-                when().get("/playlists/6M5Xb7tycAxC5V4kvuzxPB").
-                then().spec(responseSpecification).extract().response().as(Playlist.class);
+        playlistdata=getPlaylist(requestSpecification,responseSpecification,"6M5Xb7tycAxC5V4kvuzxPB");
         assertThat(playlistdata.getName(),equalTo("Updated Punjabi Favs"));
         assertThat(playlistdata.getIspublic(),equalTo(true));
     }
@@ -60,16 +60,14 @@ public class PlaylistTest
     public void UpdatePlaylist()
     {
         CreatePlaylist createPlaylistdata=new CreatePlaylist();
-        createPlaylistdata.setName("Updated Punjabi Favs");
-        createPlaylistdata.setDescription("Updated All time favs");
+        createPlaylistdata.setName("Updated Punjabii Favs");
+        createPlaylistdata.setDescription("Updated All time favss");
         createPlaylistdata.setIsPublic(true);
 
         RequestSpecification requestSpecification=defaultReqSpecs();
         ResponseSpecification responseSpecification=customresspec("",200);
 
-        given(requestSpecification).body(createPlaylistdata).
-                when().put("/playlists/6M5Xb7tycAxC5V4kvuzxPB")
-                .then().spec(responseSpecification);
+        updatePlaylist(requestSpecification,responseSpecification,  "6M5Xb7tycAxC5V4kvuzxPB",createPlaylistdata);
     }
 
     @Test
@@ -87,10 +85,7 @@ public class PlaylistTest
         ResponseSpecification responseSpecification=customresspec("application/json",400);
 
 
-        error=given(requestSpecification).body(createPlaylistdata).
-                when().post("/users/31q6bavboh4c2yrlxww6g4oh7z3a/playlists")
-                .then().spec(responseSpecification).extract().response().as(ErrorResponse.class);
-
+        error=shouldnotcreatePlaylist(requestSpecification,responseSpecification,createPlaylistdata);
 
         ErrorDetail errorDetail;
         errorDetail=error.getError();
@@ -106,17 +101,15 @@ public class PlaylistTest
         RequestSpecification barereq = new RequestSpecBuilder().
                 setBaseUri(baseUri).setBasePath(basepath).build();
 
-        RequestSpecification requestSpecification=customReqSpecs(barereq,"1234","ContentType.JSON");
+        RequestSpecification requestSpecification=customReqSpecs(barereq,"6M5Xb7tycAxC5V4kvuzxPB","ContentType.JSON");
         ResponseSpecification responseSpecification=customresspec("application/json",401);
 
 
-        error=  given(requestSpecification).
-                when().get("/playlists/6M5Xb7tycAxC5V4kvuzxPB").
-                then().spec(responseSpecification).extract().response().as(ErrorResponse.class);
+        error=  shouldnotgetPlaylist(requestSpecification,responseSpecification,"6M5Xb7tycAxC5V4kvuzxPB");
 
         ErrorDetail errorDetail;
         errorDetail=error.getError();
-        assertThat(errorDetail.getMessage(),equalTo("Invalid access token"));
+        assertThat(errorDetail.getMessage(),equalTo("No token provided"));
     }
 
 

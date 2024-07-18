@@ -5,7 +5,6 @@ public class Constants
 {
     public static String baseUri="https://api.spotify.com";
     public static String basepath="/v1";
-    public static  String  accessToken= TokenRefresh.refreshAccessToken();
 
 
 }
