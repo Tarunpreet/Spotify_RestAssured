@@ -1,8 +1,7 @@
-package org.spotify.Utils;
+package org.spotify.RestUtils;
 
 import io.restassured.builder.ResponseSpecBuilder;
 import io.restassured.filter.log.LogDetail;
-import io.restassured.http.ContentType;
 import  io.restassured.specification.ResponseSpecification;
 
 public class ResponseSpecifications {

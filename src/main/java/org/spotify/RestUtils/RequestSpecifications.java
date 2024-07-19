@@ -1,4 +1,4 @@
-package org.spotify.Utils;
+package org.spotify.RestUtils;
 
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.filter.log.LogDetail;

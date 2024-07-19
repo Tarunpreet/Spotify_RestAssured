@@ -1,5 +1,7 @@
 package Spotify.tests;
 
+import Validators.PlaylistValidator;
+import io.qameta.allure.*;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.specification.RequestSpecification;
 import io.restassured.specification.ResponseSpecification;
@@ -7,25 +9,28 @@ import org.spotify.Requests.Playlist.CreatePlaylist;
 import org.spotify.Responses.Playlist.Playlist;
 import org.spotify.Responses.error.ErrorDetail;
 import org.spotify.Responses.error.ErrorResponse;
+import org.spotify.Utils.DataManager;
 import org.testng.annotations.Test;
 
+import static Validators.PlaylistValidator.PlaylistDataValidator;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.spotify.APIHelper.PlaylistHelper.*;
-import static org.spotify.Utils.RequestSpecifications.customReqSpecs;
-import static org.spotify.Utils.RequestSpecifications.defaultReqSpecs;
-import static org.spotify.Utils.ResponseSpecifications.*;
-import static org.spotify.Utils.ResponseSpecifications.customresspec;
+import static org.spotify.RestUtils.RequestSpecifications.customReqSpecs;
+import static org.spotify.RestUtils.RequestSpecifications.defaultReqSpecs;
+import static org.spotify.RestUtils.ResponseSpecifications.*;
+import static org.spotify.RestUtils.ResponseSpecifications.customresspec;
 import static org.spotify.constants.Constants.*;
 
+@Feature("Spotify API Tests")
 public class PlaylistTest
 {
     ResponseSpecification responseSpecification;
 
 
 
-
+    @Story("Playlist Creation")
     @Test
     public void CreatePlaylist()
     {
@@ -41,21 +46,27 @@ public class PlaylistTest
 
         playlistdata=createPlaylist(requestSpecification,responseSpecification,createPlaylistdata);//Hitting the api request
 
-        assertThat(playlistdata.getName(),equalTo(createPlaylistdata.getName()));
-        assertThat(playlistdata.getIspublic(),equalTo(createPlaylistdata.getIsPublic()));
+        PlaylistDataValidator(createPlaylistdata,playlistdata);
 
     }
+    @Story("Playlist Creation")
     @Test
     public void GetPlaylist()
     {
+        CreatePlaylist createPlaylistdata=new CreatePlaylist();
+        createPlaylistdata.setName("Updated Punjabi Favs");
+        createPlaylistdata.setDescription("All time favs3");
+        createPlaylistdata.setIsPublic(true);
+        Playlist playlistdata=new Playlist();
         Playlist playlistdata=new Playlist();
         RequestSpecification requestSpecification=defaultReqSpecs();
         ResponseSpecification responseSpecification=defaultresponsespec();
 
-        playlistdata=getPlaylist(requestSpecification,responseSpecification,"6M5Xb7tycAxC5V4kvuzxPB");
-        assertThat(playlistdata.getName(),equalTo("Updated Punjabi Favs"));
-        assertThat(playlistdata.getIspublic(),equalTo(true));
+        playlistdata=getPlaylist(requestSpecification,responseSpecification,(String)DataManager.getInstance().get("playlist_id"));
+        PlaylistDataValidator(createPlaylistdata,playlistdata);
+
     }
+    @Story("Playlist Creation")
     @Test
     public void UpdatePlaylist()
     {
@@ -67,9 +78,9 @@ public class PlaylistTest
         RequestSpecification requestSpecification=defaultReqSpecs();
         ResponseSpecification responseSpecification=customresspec("",200);
 
-        updatePlaylist(requestSpecification,responseSpecification,  "6M5Xb7tycAxC5V4kvuzxPB",createPlaylistdata);
+        updatePlaylist(requestSpecification,responseSpecification,  (String)DataManager.getInstance().get("playlist_id"),createPlaylistdata);
     }
-
+    @Story("Negative Test Cases")
     @Test
     public void ShouldNotCreatePlaylist()
     {
@@ -91,6 +102,7 @@ public class PlaylistTest
         errorDetail=error.getError();
         assertThat(errorDetail.getMessage(),equalTo("Missing required field: name"));
     }
+    @Story("Negative Test Cases")
     @Test
     public void ShouldNotGetPlaylist()
     {

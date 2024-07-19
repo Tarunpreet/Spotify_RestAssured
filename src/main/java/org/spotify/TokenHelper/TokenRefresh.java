@@ -1,20 +1,18 @@
 package org.spotify.TokenHelper;
 
-import groovyjarjarantlr4.v4.codegen.model.SrcOp;
-import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.path.json.JsonPath;
 import io.restassured.specification.RequestSpecification;
-import org.spotify.constants.Constants;
+import org.spotify.Utils.ConfigManager;
 
 import java.time.Instant;
 import java.util.Base64;
 
 import static io.restassured.RestAssured.*;
-import static org.spotify.Utils.RequestSpecifications.customReqSpecs;
+import static org.spotify.RestUtils.RequestSpecifications.customReqSpecs;
 
 public class TokenRefresh {
-    public static String refreshToken="AQAwNcWWVJ6P2d6sWrKDuUuzbQsXO6Jq9OUPI5l_Lc5Qk2z22ncJMBHYrX8Wm31lGtOtwLk11hkMjJnD3RPF_6xXNnRt7P-hsroCwjWM6_07jS0i09WlUOwCWwYqdOLoPxE";
+    public static String refreshToken=(String) ConfigManager.getInstance().get("refresh_token");
     public static String accessToken;
     public static Instant expiry_time= Instant.EPOCH;//Initalizing to  1970-01-01T00:00:00Z so that we know we have not renewed the token
 
@@ -50,8 +48,8 @@ public class TokenRefresh {
 //    }
     private static String refreshAccessToken()
     {
-        String client_id="03f6622aad9c44079d1109f0ff9eead1";
-        String client_secret="0f617ef63258407b8f50fd1db7655e89";
+        String client_id= (String) ConfigManager.getInstance().get("client_id");
+        String client_secret=(String) ConfigManager.getInstance().get("client_secret");
         String auth = client_id + ":" + client_secret;
         String encodedAuth = Base64.getEncoder().encodeToString(auth.getBytes());
 
