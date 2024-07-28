@@ -121,7 +121,7 @@ public class PlaylistTest
 
         ErrorDetail errorDetail;
         errorDetail=error.getError();
-        assertThat(errorDetail.getMessage(),equalTo("No token provided"));
+        assertThat(errorDetail.getMessage(),equalTo("No token provided here"));
     }
 
 
