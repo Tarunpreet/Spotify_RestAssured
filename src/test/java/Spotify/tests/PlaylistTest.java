@@ -54,7 +54,7 @@ public class PlaylistTest
     public void GetPlaylist()
     {
         CreatePlaylist createPlaylistdata=new CreatePlaylist();
-        createPlaylistdata.setName("Updated Punjabi Favs");
+        createPlaylistdata.setName("Updated Punjabi Favs file");
         createPlaylistdata.setDescription("All time favs3");
         createPlaylistdata.setIsPublic(true);
         Playlist playlistdata=new Playlist();
