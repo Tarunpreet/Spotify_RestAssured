@@ -23,7 +23,8 @@ import static org.spotify.RestUtils.ResponseSpecifications.*;
 import static org.spotify.RestUtils.ResponseSpecifications.customresspec;
 import static org.spotify.constants.Constants.*;
 
-@Feature("Spotify API Tests")
+@Epic("Spotify API Tests")
+@Feature("Spotify Playlist Tests")
 public class PlaylistTest
 {
     ResponseSpecification responseSpecification;

@@ -31,6 +31,12 @@ public class GenericAPIHelper {
                 when().put(EndPoint)
                 .then().spec(responseSpecification).extract().response();
     }
+    public static Response patchCall(RequestSpecification requestSpecification,ResponseSpecification responseSpecification,String EndPoint,Object Payload)
+    {
+        return given(requestSpecification).body(Payload).
+                when().patch(EndPoint)
+                .then().spec(responseSpecification).extract().response();
+    }
 
 
 }
